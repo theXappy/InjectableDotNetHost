@@ -1,0 +1,43 @@
+<Project>
+    <PropertyGroup>
+        <StyleCopRuleset>$(MSBuildThisFileDirectory)stylecop.ruleset</StyleCopRuleset>
+        <StyleCopConfiguration>$(MSBuildThisFileDirectory)stylecop.json</StyleCopConfiguration>
+
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>nullable</WarningsAsErrors>
+
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+        <CodeAnalysisRuleSet>$(StyleCopRuleset)</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <RepositoryUrl>https://github.com/Rutherther/NosSmooth.Local</RepositoryUrl>
+        <RepositoryBranch>main</RepositoryBranch>
+        <PackageProjectUrl>https://github.com/Rutherther/NosSmooth.Local</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+        <PackageOutputPath>$(MSBuildThisFileDirectory)/nuget</PackageOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)README.md">
+            <Pack>true</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="$(MSBuildThisFileDirectory)LICENSE">
+            <Pack>true</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.261">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json"/>
+    </ItemGroup>
+</Project>

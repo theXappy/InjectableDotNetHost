@@ -1,0 +1,41 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: | 
+          6.0.x
+          7.0.x
+    - name: Restore dependencies
+      run: dotnet restore NosSmooth.Local.NoInject.sln
+    - name: Build
+      run: dotnet build NosSmooth.Local.NoInject.sln --no-restore --version-suffix "main$GITHUB_RUN_ID"
+    - name: Test
+      run: dotnet test NosSmooth.Local.NoInject.sln --no-build --verbosity normal
+
+    - name: Pack app
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: dotnet pack NosSmooth.Local.NoInject.sln -c Release --no-restore --version-suffix "main$GITHUB_RUN_ID"
+
+    - name: Publish NuGet on MyGet
+      working-directory: nuget
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: dotnet nuget push *.nupkg --skip-duplicate -k $MYGET_AUTH_TOKEN -s https://www.myget.org/F/nossmooth/api/v3/index.json
+      env:
+        MYGET_AUTH_TOKEN: ${{secrets.MYGET_KEY}}
