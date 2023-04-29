@@ -40,6 +40,7 @@ public class DllMain
     [UnmanagedCallersOnly(EntryPoint = "Main")]
     public static int Main(nuint data)
     {
+        Thread.Sleep(10_000);
         AllocConsole();
         new Thread
         (
@@ -47,7 +48,8 @@ public class DllMain
             {
                 try
                 {
-                    MainEntry().GetAwaiter().GetResult();
+                    Console.WriteLine("WIN!");
+                    //MainEntry().GetAwaiter().GetResult();
                 }
                 catch (Exception e)
                 {

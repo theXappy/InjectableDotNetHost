@@ -78,6 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(Configuration)\</IntDir>
+    <OutDir>$(ProjectDir)\..\NosSmooth.Injector\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -164,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="coreclr_delegates.h" />
+    <ClInclude Include="msgboxf.h" />
     <ClInclude Include="nethost.h" />
     <ClInclude Include="hostfxr.h" />
     <ClInclude Include="nossmooth.h" />

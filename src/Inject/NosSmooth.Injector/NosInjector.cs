@@ -158,11 +158,11 @@ public class NosInjector
 
             var loadParams = new LoadParams
             {
-                LibraryPath = (int)dllPathMemory.Pointer,
-                MethodName = (int)methodNameMemory.Pointer,
-                RuntimeConfigPath = (int)runtimePathMemory.Pointer,
-                TypePath = (int)classPathMemory.Pointer,
-                UserData = (int)userDataMemory.Pointer
+                LibraryPath = (long)dllPathMemory.Pointer,
+                MethodName = (long)methodNameMemory.Pointer,
+                RuntimeConfigPath = (long)runtimePathMemory.Pointer,
+                TypePath = (long)classPathMemory.Pointer,
+                UserData = (long)userDataMemory.Pointer
             };
 
             var nosSmoothInjectPath = Path.GetFullPath(_options.NosSmoothInjectPath);

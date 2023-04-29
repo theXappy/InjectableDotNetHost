@@ -35,5 +35,12 @@
     <ClInclude Include="coreclr_delegates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="msgboxf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" />
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" />
   </ItemGroup>
 </Project>

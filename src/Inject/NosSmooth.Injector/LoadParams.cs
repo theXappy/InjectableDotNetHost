@@ -21,12 +21,12 @@ namespace NosSmooth.Injector
         /// <summary>
         /// The full path of the library.
         /// </summary>
-        public int LibraryPath;
+        public long LibraryPath;
 
         /// <summary>
         /// The full path of the library.
         /// </summary>
-        public int RuntimeConfigPath;
+        public long RuntimeConfigPath;
 
         /// <summary>
         /// The full path to the type with the method marked as UnsafeCallersOnly.
@@ -34,16 +34,16 @@ namespace NosSmooth.Injector
         /// <remarks>
         /// Can be for example "LibraryNamespace.Type, LibraryNamespace".
         /// </remarks>
-        public int TypePath;
+        public long TypePath;
 
         /// <summary>
         /// The name of the method to execute.
         /// </summary>
-        public int MethodName;
+        public long MethodName;
 
         /// <summary>
         /// The user data to pass.
         /// </summary>
-        public int UserData;
+        public long UserData;
     }
 }
