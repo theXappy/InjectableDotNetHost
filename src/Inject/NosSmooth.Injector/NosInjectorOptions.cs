@@ -24,7 +24,15 @@ namespace NosSmooth.Injector
         /// <remarks>
         /// If not absolute path, then relative path from the current executing process is assumed.
         /// </remarks>
-        public string NosSmoothInjectPath { get; set; } = "NosSmooth.Inject.dll";
+        public string NosSmoothInjectPath_x86 { get; set; } = "cpp_dll/x86/NosSmooth.Inject.dll";
+
+        /// <summary>
+        /// Gets or sets the path to the nos smooth inject dll.
+        /// </summary>
+        /// <remarks>
+        /// If not absolute path, then relative path from the current executing process is assumed.
+        /// </remarks>
+        public string NosSmoothInjectPath_x64 { get; set; } = "cpp_dll/x64/NosSmooth.Inject.dll";
 
         /// <inheritdoc/>
         public NosInjectorOptions Value => this;

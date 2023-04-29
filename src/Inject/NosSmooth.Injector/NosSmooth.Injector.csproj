@@ -1,35 +1,42 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb;.dll</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <VersionPrefix>2.0.1</VersionPrefix>
-    <PackageReleaseNotes>Inject with possibility to return an integer and pass in arbitrary arguments.</PackageReleaseNotes>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb;.dll</AllowedOutputExtensionsInPackageBuildOutputFolder>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<VersionPrefix>2.0.1</VersionPrefix>
+		<PackageReleaseNotes>Inject with possibility to return an integer and pass in arbitrary arguments.</PackageReleaseNotes>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="C:\Users\Shai\Desktop\SAM_NOTES_RES\InjectableDotNetHost\LICENSE" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
+		<PackageReference Include="Remora.Results" Version="7.2.3" />
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
-    <PackageReference Include="Remora.Results" Version="7.2.3" />
+		<PackageReference Include="Reloaded.Injector" Version="1.2.5">
+			<IncludeAssets>All</IncludeAssets>
+			<PrivateAssets>None</PrivateAssets>
+		</PackageReference>
+	</ItemGroup>
 
-    <PackageReference Include="Reloaded.Injector" Version="1.2.5">
-      <IncludeAssets>All</IncludeAssets>
-      <PrivateAssets>None</PrivateAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="NosSmooth.Inject.dll" Pack="true" PackageCopyToOutput="true">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-
-    <Content Include="nethost.dll" Pack="true" PackageCopyToOutput="true">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="$(SolutionDir)nethost\x64\nethost.dll" Link="cpp_dll\x64\nethost.dll">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cpp_dll\x64\NosSmooth.Inject_x64.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="cpp_dll\x64\NosSmooth.Inject_x64.pdb">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="$(SolutionDir)nethost\x86\nethost.dll" Link="cpp_dll\x86\nethost.dll">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cpp_dll\x86\NosSmooth.Inject_x86.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="cpp_dll\x86\NosSmooth.Inject_x86.pdb">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>

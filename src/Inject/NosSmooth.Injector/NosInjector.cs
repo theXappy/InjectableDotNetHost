@@ -165,10 +165,10 @@ public class NosInjector
                 UserData = (long)userDataMemory.Pointer
             };
 
-            var nosSmoothInjectPath = Path.GetFullPath(_options.NosSmoothInjectPath);
+            var nosSmoothInjectPath = Path.GetFullPath(_options.NosSmoothInjectPath_x86);
             if (!File.Exists(nosSmoothInjectPath))
             {
-                return new NotFoundError($"Could not find the dll to inject at \"{_options.NosSmoothInjectPath}\".");
+                return new NotFoundError($"Could not find the dll to inject at \"{_options.NosSmoothInjectPath_x86}\".");
             }
 
             var injected = injector.Inject(nosSmoothInjectPath);
