@@ -19,7 +19,7 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: Restore dependencies
-      run: dotnet restore NosSmooth.Local.NoInject.sln
+      run: dotnet restore NosSmooth.Local.sln
     - name: Build app for release
       run: msbuild NosSmooth.Local.sln -t:rebuild -verbosity:diag -property:Configuration=Debug
 
