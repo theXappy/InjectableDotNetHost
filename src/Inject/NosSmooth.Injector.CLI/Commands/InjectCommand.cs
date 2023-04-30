@@ -49,7 +49,6 @@ namespace NosSmooth.Injector.CLI.Commands
             string? methodName = null
         )
         {
-            process = Process.GetProcessesByName("notepad").Single().Id.ToString();
             if (!int.TryParse(process, out var processId))
             {
                 var foundProcess = Process.GetProcesses().FirstOrDefault
