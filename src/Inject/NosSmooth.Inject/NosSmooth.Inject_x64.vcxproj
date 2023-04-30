@@ -45,7 +45,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(Configuration)\</IntDir>
+    <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
     <OutDir>$(ProjectDir)\..\NosSmooth.Injector\cpp_dll\$(PlatformShortName)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

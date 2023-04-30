@@ -7,6 +7,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 using System.Security;
 using System.Text;
 using Microsoft.Extensions.Options;
@@ -78,6 +79,19 @@ public class NosInjector
     }
 
     /// <summary>
+    /// Checks if a process is 32-bit or 64-bit.
+    /// </summary>
+    /// <param name="hProcess">Process.</param>
+    /// <param name="wow64Process">Is it a Wow64.</param>
+    /// <returns>True if the value was read, false otherwise.</returns>
+    [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool IsWow64Process(
+        [In] IntPtr hProcess,
+        [Out] out bool wow64Process
+    );
+
+    /// <summary>
     /// Inject the given .NET 5+ dll into NosTale process.
     /// </summary>
     /// <remarks>
@@ -108,6 +122,16 @@ public class NosInjector
     {
         try
         {
+            bool x64 = false;
+            if (IsWow64Process(process.Handle, out var isWow64))
+            {
+                x64 = !isWow64;
+            }
+            else
+            {
+                throw new Exception("ERROR: Failed to determine if the process is running as a 32-bit or 64-bit application.");
+            }
+
             dllPath = Path.GetFullPath(dllPath);
             if (!File.Exists(dllPath))
             {
@@ -117,12 +141,23 @@ public class NosInjector
             using var injector = new Reloaded.Injector.Injector(process);
             var memory = new ExternalMemory(process);
 
+            string relativeNosSmoothPath = _options.NosSmoothInjectPath_x86;
+            if (x64)
+            {
+                relativeNosSmoothPath = _options.NosSmoothInjectPath_x64;
+            }
+
+            var nosSmoothInjectPath = Path.GetFullPath(relativeNosSmoothPath);
+            if (!File.Exists(nosSmoothInjectPath))
+            {
+                return new NotFoundError($"Could not find the dll to inject at \"{relativeNosSmoothPath}\".");
+            }
+
             var netHostInjectionResult = InjectNetHostDll
             (
                 injector,
                 Path.GetFullPath("."),
-                System.IO.Path.GetDirectoryName(Path.GetFullPath(dllPath)),
-                System.IO.Path.GetDirectoryName(process.MainModule?.FileName)
+                System.IO.Path.GetDirectoryName(nosSmoothInjectPath)
             );
 
             if (!netHostInjectionResult.IsSuccess)
@@ -156,21 +191,6 @@ public class NosInjector
                 return new GenericError("Could not allocate memory in the external process.");
             }
 
-            var loadParams = new LoadParams
-            {
-                LibraryPath = (long)dllPathMemory.Pointer,
-                MethodName = (long)methodNameMemory.Pointer,
-                RuntimeConfigPath = (long)runtimePathMemory.Pointer,
-                TypePath = (long)classPathMemory.Pointer,
-                UserData = (long)userDataMemory.Pointer
-            };
-
-            var nosSmoothInjectPath = Path.GetFullPath(_options.NosSmoothInjectPath_x86);
-            if (!File.Exists(nosSmoothInjectPath))
-            {
-                return new NotFoundError($"Could not find the dll to inject at \"{_options.NosSmoothInjectPath_x86}\".");
-            }
-
             var injected = injector.Inject(nosSmoothInjectPath);
             if (injected == 0)
             {
@@ -178,7 +198,32 @@ public class NosInjector
                     (nosSmoothInjectPath, "Did you forget to copy nethost.dll into the process directory?");
             }
 
-            var functionResult = injector.CallFunction(nosSmoothInjectPath, "LoadAndCallMethod", loadParams);
+            int functionResult;
+            if (x64)
+            {
+                var loadParams64 = new LoadParams_x64
+                {
+                    LibraryPath = (long)dllPathMemory.Pointer,
+                    MethodName = (long)methodNameMemory.Pointer,
+                    RuntimeConfigPath = (long)runtimePathMemory.Pointer,
+                    TypePath = (long)classPathMemory.Pointer,
+                    UserData = (long)userDataMemory.Pointer
+                };
+                functionResult = injector.CallFunction(nosSmoothInjectPath, "LoadAndCallMethod", loadParams64);
+            }
+            else
+            {
+                var loadParams32 = new LoadParams_x32
+                {
+                    LibraryPath = (int)dllPathMemory.Pointer,
+                    MethodName = (int)methodNameMemory.Pointer,
+                    RuntimeConfigPath = (int)runtimePathMemory.Pointer,
+                    TypePath = (int)classPathMemory.Pointer,
+                    UserData = (int)userDataMemory.Pointer
+                };
+                functionResult = injector.CallFunction(nosSmoothInjectPath, "LoadAndCallMethod", loadParams32);
+
+            }
 
             injector.Eject(nosSmoothInjectPath);
 
