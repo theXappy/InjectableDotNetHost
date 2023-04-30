@@ -20,7 +20,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1
 
     - name: Build app for release
-      run: msbuild NosSmooth.Local.sln -t:rebuild -verbosity:diag -property:Configuration
+      run: msbuild NosSmooth.Local.sln -t:rebuild -verbosity:diag -property:Configuration=Debug
 
     - name: Pack app
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
