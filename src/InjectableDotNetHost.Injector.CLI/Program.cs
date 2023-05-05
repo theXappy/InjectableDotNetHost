@@ -4,13 +4,13 @@
 //  Copyright (c) František Boháček. All rights reserved.
 //  Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using InjectableDotNetHost.Injector.CLI.Commands;
 using Microsoft.Extensions.DependencyInjection;
-using NosSmooth.Injector.CLI.Commands;
 using Remora.Commands.Extensions;
 using Remora.Commands.Services;
 using Remora.Results;
 
-namespace NosSmooth.Injector.CLI
+namespace InjectableDotNetHost.Injector.CLI
 {
     /// <summary>
     /// The entrypoint class.
@@ -60,8 +60,8 @@ namespace NosSmooth.Injector.CLI
         {
             var collection = new ServiceCollection();
             collection
-                .AddSingleton<NosInjector>()
-                .AddOptions<NosInjectorOptions>();
+                .AddSingleton<DotNetHostInjector>()
+                .AddOptions<DotNetHostInjectorOptions>();
 
             collection
                 .AddCommands()

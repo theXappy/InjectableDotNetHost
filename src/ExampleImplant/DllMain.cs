@@ -6,7 +6,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace SimplePiiBot;
+namespace ExampleImplant;
 
 /// <summary>
 /// The entrypoint class.
@@ -23,10 +23,11 @@ public class DllMain
     /// <summary>
     /// Represents the dll entrypoint method.
     /// </summary>
+    /// <param name="data">Data passed from injector.</param>
+    /// <returns>Return code.</returns>
     [UnmanagedCallersOnly(EntryPoint = "Main")]
     public static int Main(nuint data)
     {
-        Thread.Sleep(10_000);
         AllocConsole();
         new Thread
         (
@@ -35,7 +36,6 @@ public class DllMain
                 try
                 {
                     Console.WriteLine("WIN!");
-                    //MainEntry().GetAwaiter().GetResult();
                 }
                 catch (Exception e)
                 {

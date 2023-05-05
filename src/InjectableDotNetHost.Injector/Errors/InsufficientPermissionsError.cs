@@ -6,7 +6,7 @@
 
 using Remora.Results;
 
-namespace NosSmooth.Injector.Errors;
+namespace InjectableDotNetHost.Injector.Errors;
 
 /// <summary>
 /// The current user has insufficient permissions to inject into the given process.

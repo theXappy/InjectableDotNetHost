@@ -40,7 +40,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)README.md" />
-    <None Include="$(MSBuildThisFileDirectory)LICENSE" />
+    <None Include="LICENSE.md" />
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

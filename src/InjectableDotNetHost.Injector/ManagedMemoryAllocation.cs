@@ -4,10 +4,9 @@
 //  Copyright (c) František Boháček. All rights reserved.
 //  Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System.Net.NetworkInformation;
 using Reloaded.Memory.Sources;
 
-namespace NosSmooth.Injector;
+namespace InjectableDotNetHost.Injector;
 
 /// <summary>
 /// Represents freeable memory allocation.

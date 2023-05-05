@@ -10,20 +10,20 @@ using Remora.Commands.Attributes;
 using Remora.Commands.Groups;
 using Remora.Results;
 
-namespace NosSmooth.Injector.CLI.Commands
+namespace InjectableDotNetHost.Injector.CLI.Commands
 {
     /// <summary>
     /// Injection command for injecting .NET 5+ libraries with UnmanagedCallersOnly method.
     /// </summary>
     internal class InjectCommand : CommandGroup
     {
-        private readonly NosInjector _injector;
+        private readonly DotNetHostInjector _injector;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="InjectCommand"/> class.
         /// </summary>
-        /// <param name="injector">The nos smooth injector.</param>
-        public InjectCommand(NosInjector injector)
+        /// <param name="injector">The injector.</param>
+        public InjectCommand(DotNetHostInjector injector)
         {
             _injector = injector;
         }

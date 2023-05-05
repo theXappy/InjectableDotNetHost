@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "InjectableDotNetHost.Injector.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "inject 2460 \"C:\\Users\\Shai\\Desktop\\SAM_NOTES_RES\\InjectableDotNetHost\\src\\ExampleImplant\\bin\\Debug\\net7.0\\ExampleImplant.dll\""
+    }
+  }
+}

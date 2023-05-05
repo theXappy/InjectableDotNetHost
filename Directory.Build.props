@@ -12,9 +12,9 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <RepositoryUrl>https://github.com/Rutherther/NosSmooth.Local</RepositoryUrl>
+        <RepositoryUrl>https://github.com/theXappy/InjectableDotNetHost</RepositoryUrl>
         <RepositoryBranch>main</RepositoryBranch>
-        <PackageProjectUrl>https://github.com/Rutherther/NosSmooth.Local</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/theXappy/InjectableDotNetHost</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
 

@@ -1,40 +1,35 @@
 ﻿//
-//  NosInjectorOptions.cs
+//  DotNetHostInjectorOptions.cs
 //
 //  Copyright (c) František Boháček. All rights reserved.
 //  Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 
-namespace NosSmooth.Injector
+namespace InjectableDotNetHost.Injector
 {
     /// <summary>
-    /// Options for NosInjector.
+    /// Options for DotNetHostInjector.
     /// </summary>
-    public class NosInjectorOptions : IOptions<NosInjectorOptions>
+    public class DotNetHostInjectorOptions : IOptions<DotNetHostInjectorOptions>
     {
         /// <summary>
-        /// Gets or sets the path to the nos smooth inject dll.
+        /// Gets or sets the path to the bootstrap dll.
         /// </summary>
         /// <remarks>
         /// If not absolute path, then relative path from the current executing process is assumed.
         /// </remarks>
-        public string NosSmoothInjectPath_x86 { get; set; } = "cpp_dll/x86/NosSmooth.Inject.dll";
+        public string BootstrapPath_x86 { get; set; } = "cpp_dll/x86/InjectableDotNetHost.Bootstrap_x86";
 
         /// <summary>
-        /// Gets or sets the path to the nos smooth inject dll.
+        /// Gets or sets the path to the bootstrap dll.
         /// </summary>
         /// <remarks>
         /// If not absolute path, then relative path from the current executing process is assumed.
         /// </remarks>
-        public string NosSmoothInjectPath_x64 { get; set; } = "cpp_dll/x64/NosSmooth.Inject.dll";
+        public string BootstrapPath_x64 { get; set; } = "cpp_dll/x64/InjectableDotNetHost.Bootstrap_x64.dll";
 
         /// <inheritdoc/>
-        public NosInjectorOptions Value => this;
+        public DotNetHostInjectorOptions Value => this;
     }
 }

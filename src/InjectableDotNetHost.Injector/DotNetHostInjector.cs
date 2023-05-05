@@ -1,45 +1,41 @@
 ﻿//
-//  NosInjector.cs
+//  DotNetHostInjector.cs
 //
 //  Copyright (c) František Boháček. All rights reserved.
 //  Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
 using System.Security;
 using System.Text;
+using InjectableDotNetHost.Injector.Errors;
 using Microsoft.Extensions.Options;
-using NosSmooth.Injector.Errors;
 using Reloaded.Memory.Sources;
 using Remora.Results;
 
-namespace NosSmooth.Injector;
+namespace InjectableDotNetHost.Injector;
 
 /// <summary>
-/// Nos smooth injector for .NET 5+ projects.
+/// .NET Core Host injector for .NET 5+ projects.
 /// </summary>
 /// <remarks>
-/// If you want to inject your project into NosTale that
-/// uses NosSmooth.LocalClient, use this injector.
-/// You must expose static UnmanagedCallersOnly method.
+/// Your entry point method should be a static UnmanagedCallersOnly method.
 /// </remarks>
-public class NosInjector
+public class DotNetHostInjector
 {
-    private readonly NosInjectorOptions _options;
+    private readonly DotNetHostInjectorOptions _options;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NosInjector"/> class.
+    /// Initializes a new instance of the <see cref="DotNetHostInjector"/> class.
     /// </summary>
     /// <param name="options">The injector options.</param>
-    public NosInjector(IOptions<NosInjectorOptions> options)
+    public DotNetHostInjector(IOptions<DotNetHostInjectorOptions> options)
     {
         _options = options.Value;
     }
 
     /// <summary>
-    /// Inject the given .NET 5+ dll into NosTale process.
+    /// Inject the given .NET 5+ dll into a process.
     /// </summary>
     /// <remarks>
     /// The dll must also have .runtimeconfig.json present next to the dll.
@@ -92,7 +88,7 @@ public class NosInjector
     );
 
     /// <summary>
-    /// Inject the given .NET 5+ dll into NosTale process.
+    /// Inject the given .NET 5+ dll into a process.
     /// </summary>
     /// <remarks>
     /// The dll must also have .runtimeconfig.json present next to the dll.
@@ -141,23 +137,23 @@ public class NosInjector
             using var injector = new Reloaded.Injector.Injector(process);
             var memory = new ExternalMemory(process);
 
-            string relativeNosSmoothPath = _options.NosSmoothInjectPath_x86;
+            string relativeBootstrapPath = _options.BootstrapPath_x86;
             if (x64)
             {
-                relativeNosSmoothPath = _options.NosSmoothInjectPath_x64;
+                relativeBootstrapPath = _options.BootstrapPath_x64;
             }
 
-            var nosSmoothInjectPath = Path.GetFullPath(relativeNosSmoothPath);
-            if (!File.Exists(nosSmoothInjectPath))
+            var absoluteBootstrapPath = Path.GetFullPath(relativeBootstrapPath);
+            if (!File.Exists(absoluteBootstrapPath))
             {
-                return new NotFoundError($"Could not find the dll to inject at \"{relativeNosSmoothPath}\".");
+                return new NotFoundError($"Could not find the dll to inject at \"{relativeBootstrapPath}\".");
             }
 
             var netHostInjectionResult = InjectNetHostDll
             (
                 injector,
                 Path.GetFullPath("."),
-                System.IO.Path.GetDirectoryName(nosSmoothInjectPath)
+                System.IO.Path.GetDirectoryName(absoluteBootstrapPath)
             );
 
             if (!netHostInjectionResult.IsSuccess)
@@ -191,11 +187,11 @@ public class NosInjector
                 return new GenericError("Could not allocate memory in the external process.");
             }
 
-            var injected = injector.Inject(nosSmoothInjectPath);
+            var injected = injector.Inject(absoluteBootstrapPath);
             if (injected == 0)
             {
                 return new InjectionFailedError
-                    (nosSmoothInjectPath, "Did you forget to copy nethost.dll into the process directory?");
+                    (absoluteBootstrapPath, "Did you forget to copy nethost.dll into the process directory?");
             }
 
             int functionResult;
@@ -209,7 +205,7 @@ public class NosInjector
                     TypePath = (long)classPathMemory.Pointer,
                     UserData = (long)userDataMemory.Pointer
                 };
-                functionResult = injector.CallFunction(nosSmoothInjectPath, "LoadAndCallMethod", loadParams64);
+                functionResult = injector.CallFunction(absoluteBootstrapPath, "LoadAndCallMethod", loadParams64);
             }
             else
             {
@@ -221,11 +217,11 @@ public class NosInjector
                     TypePath = (int)classPathMemory.Pointer,
                     UserData = (int)userDataMemory.Pointer
                 };
-                functionResult = injector.CallFunction(nosSmoothInjectPath, "LoadAndCallMethod", loadParams32);
+                functionResult = injector.CallFunction(absoluteBootstrapPath, "LoadAndCallMethod", loadParams32);
 
             }
 
-            injector.Eject(nosSmoothInjectPath);
+            injector.Eject(absoluteBootstrapPath);
 
             if (functionResult < 3)
             {

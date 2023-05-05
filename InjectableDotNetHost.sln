@@ -3,24 +3,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33209.295
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NosSmooth.Inject_x86", "src\NosSmooth.Inject\NosSmooth.Inject.vcxproj", "{CA2873D8-BD0B-4583-818D-B94A3C2ABBA3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NosSmooth.Injector", "src\NosSmooth.Injector\NosSmooth.Injector.csproj", "{CAD71BA8-1AA6-4063-AEA7-6EEC36E1F3CC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{BF4D83F7-CB1A-447C-9278-68A983F44CE1} = {BF4D83F7-CB1A-447C-9278-68A983F44CE1}
-		{CA2873D8-BD0B-4583-818D-B94A3C2ABBA3} = {CA2873D8-BD0B-4583-818D-B94A3C2ABBA3}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NosSmooth.Injector.CLI", "src\NosSmooth.Injector.CLI\NosSmooth.Injector.CLI.csproj", "{49E3C82D-030F-4AB2-B967-FF9B5969E5CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InjectableDotNetHost.Injector.CLI", "src\InjectableDotNetHost.Injector.CLI\InjectableDotNetHost.Injector.CLI.csproj", "{49E3C82D-030F-4AB2-B967-FF9B5969E5CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".metadata", ".metadata", "{FF809515-91A0-442B-9278-F5A474AEB2BB}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimplePiiBot", "src\SimplePiiBot\SimplePiiBot.csproj", "{A93B5A9F-68FC-4A17-AFAC-DAB22B617A50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InjectableDotNetHost.Injector", "src\InjectableDotNetHost.Injector\InjectableDotNetHost.Injector.csproj", "{CAD71BA8-1AA6-4063-AEA7-6EEC36E1F3CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BF4D83F7-CB1A-447C-9278-68A983F44CE1} = {BF4D83F7-CB1A-447C-9278-68A983F44CE1}
+		{CA2873D8-BD0B-4583-818D-B94A3C2ABBA3} = {CA2873D8-BD0B-4583-818D-B94A3C2ABBA3}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NosSmooth.Inject_x64", "src\NosSmooth.Inject\NosSmooth.Inject_x64.vcxproj", "{BF4D83F7-CB1A-447C-9278-68A983F44CE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleImplant", "src\ExampleImplant\ExampleImplant.csproj", "{A93B5A9F-68FC-4A17-AFAC-DAB22B617A50}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjectableDotNetHost.Bootstrap_x86", "src\InjectableDotNetHost.Bootstrap\InjectableDotNetHost.Bootstrap_x86.vcxproj", "{CA2873D8-BD0B-4583-818D-B94A3C2ABBA3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjectableDotNetHost.Bootstrap_x64", "src\InjectableDotNetHost.Bootstrap\InjectableDotNetHost.Bootstrap_x64.vcxproj", "{BF4D83F7-CB1A-447C-9278-68A983F44CE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

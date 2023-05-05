@@ -9,10 +9,10 @@ using Remora.Commands.Attributes;
 using Remora.Commands.Groups;
 using Remora.Results;
 
-namespace NosSmooth.Injector.CLI.Commands
+namespace InjectableDotNetHost.Injector.CLI.Commands
 {
     /// <summary>
-    /// Command for listing processes to find id of NosTale process.
+    /// Command for listing processes to find id of a process.
     /// </summary>
     internal class ListProcessesCommand : CommandGroup
     {
@@ -22,7 +22,7 @@ namespace NosSmooth.Injector.CLI.Commands
         /// <param name="nameContains">What should the name of the process contain.</param>
         /// <returns>A result that may or may not have succeeded.</returns>
         [Command("list")]
-        public Task<Result> List(string nameContains = "Nostale")
+        public Task<Result> List(string nameContains)
         {
             var processes = Process.GetProcesses();
             foreach (var process in processes.Where(x => x.ProcessName.Contains(nameContains, StringComparison.OrdinalIgnoreCase)))

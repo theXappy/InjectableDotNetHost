@@ -6,7 +6,7 @@
 
 using Remora.Results;
 
-namespace NosSmooth.Injector.Errors;
+namespace InjectableDotNetHost.Injector.Errors;
 
 /// <summary>
 /// The injection could not be finished successfully.

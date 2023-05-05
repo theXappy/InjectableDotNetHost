@@ -23,20 +23,40 @@
 		<None Include="$(SolutionDir)nethost\x64\nethost.dll" Link="cpp_dll\x64\nethost.dll">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="cpp_dll\x64\NosSmooth.Inject_x64.dll">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.dll">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="cpp_dll\x64\NosSmooth.Inject_x64.pdb">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.exp">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.lib">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.pdb">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 		<None Include="$(SolutionDir)nethost\x86\nethost.dll" Link="cpp_dll\x86\nethost.dll">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="cpp_dll\x86\NosSmooth.Inject_x86.dll">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.dll">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
-		<None Update="cpp_dll\x86\NosSmooth.Inject_x86.pdb">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.exp">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
+		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.lib">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.pdb">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <NativeLibs Remove="DotNetHostInjectorOptions.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <NativeLibs Remove="DotNetHostInjector.cs" />
 	</ItemGroup>
 </Project>
