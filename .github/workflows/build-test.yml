@@ -25,7 +25,7 @@ jobs:
     - name: "Check Bootstrap x86 Output"
       uses: andstor/file-existence-action@v2
       with:
-        files: "dist\Debug\x86\InjectableDotNetHost.Bootstrap_x86.dll, dist\Debug\x86\InjectableDotNetHost.Bootstrap_x86.pdb "
+        files: "dist/Debug/x86/InjectableDotNetHost.Bootstrap_x86.dll, dist/Debug/x86/InjectableDotNetHost.Bootstrap_x86.pdb "
         fail: true
 
     - name: Compile Bootstrap x64
@@ -33,7 +33,7 @@ jobs:
     - name: "Check Bootstrap x64 Output"
       uses: andstor/file-existence-action@v2
       with:
-        files: "dist\Debug\x64\InjectableDotNetHost.Bootstrap_x64.dll, dist\Debug\x64\InjectableDotNetHost.Bootstrap_x64.pdb "
+        files: "dist/Debug/x64/InjectableDotNetHost.Bootstrap_x64.dll, dist/Debug/x64/InjectableDotNetHost.Bootstrap_x64.pdb "
         fail: true
 
     - name: Build app for release
