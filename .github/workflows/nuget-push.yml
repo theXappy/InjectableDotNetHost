@@ -9,21 +9,38 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    name: Update NuGet Package
+
+    runs-on: windows-latest
+
     steps:
-    
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      
-    - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1
+    - uses: actions/checkout@v3
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+    - name: Restore dependencies
+      run: dotnet restore InjectableDotNetHost.sln
+    - name: Compile Bootstrap x86
+      run: msbuild -t:rebuild -verbosity:diag -property:Configuration=Debug -property:Platform=Win32 -property:SolutionDir=..\..\ src\InjectableDotNetHost.Bootstrap\InjectableDotNetHost.Bootstrap_x86.vcxproj
+    - name: "Check Bootstrap x86 Output"
+      uses: andstor/file-existence-action@v2
       with:
-        dotnet-version: '7.0.x'
-        
+        files: "dist/Debug/x86/InjectableDotNetHost.Bootstrap_x86.dll, dist/Debug/x86/InjectableDotNetHost.Bootstrap_x86.pdb "
+        fail: true
+
+    - name: Compile Bootstrap x64
+      run: msbuild -t:rebuild -verbosity:diag -property:Configuration=Debug -property:Platform=x64 -property:SolutionDir=..\..\ src\InjectableDotNetHost.Bootstrap\InjectableDotNetHost.Bootstrap_x64.vcxproj
+    - name: "Check Bootstrap x64 Output"
+      uses: andstor/file-existence-action@v2
+      with:
+        files: "dist/Debug/x64/InjectableDotNetHost.Bootstrap_x64.dll, dist/Debug/x64/InjectableDotNetHost.Bootstrap_x64.pdb "
+        fail: true
+
+    - name: Build app for release
+      run: msbuild InjectableDotNetHost.sln -t:build -verbosity:diag -property:Configuration=Debug -property:Platform=Mixed
+
     - name: Pack app
-      run: dotnet pack NosSmooth.Local.NoInject.sln --configuration Release
-      
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: dotnet pack src\InjectableDotNetHost.Injector\InjectableDotNetHost.Injector.csproj -p:SolutionDir=..\..\ -c Debug --version-suffix "main$GITHUB_RUN_ID"
+
     - name: Publish NuGet
       working-directory: nuget
       run: dotnet nuget push *.nupkg --skip-duplicate -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
