@@ -65,6 +65,6 @@
 	</Target>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="xcopy /Y /s &quot;$(SolutionDir)dist\$(Configuration)\x86\&quot; &quot;$(ProjectDir)cpp_dll\x86&quot;&#xD;&#xA;xcopy /Y /s &quot;$(SolutionDir)dist\$(Configuration)\x64\&quot; &quot;$(ProjectDir)cpp_dll\x64&quot;" />
+		<Exec Command="xcopy /Y /s &quot;$(SolutionDir)dist\$(Configuration)\x86\&quot; &quot;$(ProjectDir)cpp_dll\x86\&quot;&#xD;&#xA;xcopy /Y /s &quot;$(SolutionDir)dist\$(Configuration)\x64\&quot; &quot;$(ProjectDir)cpp_dll\x64\&quot;" />
 	</Target>
 </Project>
