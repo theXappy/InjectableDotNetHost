@@ -19,10 +19,22 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.1
     - name: Restore dependencies
-      run: dotnet restore NosSmooth.Local.sln
+      run: dotnet restore InjectableDotNetHost.sln
+    - name: Compile Bootstrap x86
+      run: msbuild -t:rebuild -verbosity:diag -property:Configuration=Debug -property:Platform=Win32 -property:SolutionDir=..\..\ src\InjectableDotNetHost.Bootstrap\InjectableDotNetHost.Bootstrap_x86.vcxproj
+    - name: Compile Bootstrap x64
+      run: msbuild -t:rebuild -verbosity:diag -property:Configuration=Debug -property:Platform=x64 -property:SolutionDir=..\..\ src\InjectableDotNetHost.Bootstrap\InjectableDotNetHost.Bootstrap_x64.vcxproj
+    - name: "Check file existence"
+      uses: andstor/file-existence-action@v2
+      with:
+        files: "LICENSE"
+    - name: "Check file existence"
+      uses: andstor/file-existence-action@v2
+      with:
+        files: "NO_SUCH_FILE"
     - name: Build app for release
-      run: msbuild NosSmooth.Local.sln -t:rebuild -verbosity:diag -property:Configuration=Debug
+      run: msbuild InjectableDotNetHost.sln -t:build -verbosity:diag -property:Configuration=Debug -property:Platform=Mixed
 
     - name: Pack app
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: dotnet pack NosSmooth.Local.sln -c Debug --version-suffix "main$GITHUB_RUN_ID"
+      run: dotnet pack src\InjectableDotNetHost.Injector\InjectableDotNetHost.Injector.csproj -p:SolutionDir=..\..\ -c Debug --version-suffix "main$GITHUB_RUN_ID"
