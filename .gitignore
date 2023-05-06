@@ -350,3 +350,4 @@ MigrationBackup/
 *x64*.exp
 *x86*.exp
 cpp_dll/
+nuget/
