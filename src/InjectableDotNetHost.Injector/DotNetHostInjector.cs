@@ -5,6 +5,7 @@
 //  Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
@@ -258,6 +259,11 @@ public class DotNetHostInjector
                     x64
                         ? Properties.Resources.InjectableDotNetHost_Bootstrap_x64dll
                         : Properties.Resources.InjectableDotNetHost_Bootstrap_x86dll;
+
+                // Create the directory path if it does not exist
+                string directoryPath = Path.GetDirectoryName(absoluteBootstrapPath);
+                Directory.CreateDirectory(directoryPath);
+
                 File.WriteAllBytes(absoluteBootstrapPath, dllData);
 
                 // bootstrap pdb
