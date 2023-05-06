@@ -19,7 +19,7 @@ namespace InjectableDotNetHost.Injector
         /// <remarks>
         /// If not absolute path, then relative path from the current executing process is assumed.
         /// </remarks>
-        public string BootstrapPath_x86 { get; set; } = "cpp_dll/x86/InjectableDotNetHost.Bootstrap_x86";
+        public string BootstrapPath_x86 { get; set; } = "cpp_dll/x86/InjectableDotNetHost.Bootstrap_x86.dll";
 
         /// <summary>
         /// Gets or sets the path to the bootstrap dll.

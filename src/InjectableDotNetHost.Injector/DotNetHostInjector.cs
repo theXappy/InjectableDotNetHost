@@ -6,6 +6,7 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.X86;
 using System.Security;
 using System.Text;
 using InjectableDotNetHost.Injector.Errors;
@@ -137,16 +138,10 @@ public class DotNetHostInjector
             using var injector = new Reloaded.Injector.Injector(process);
             var memory = new ExternalMemory(process);
 
-            string relativeBootstrapPath = _options.BootstrapPath_x86;
-            if (x64)
+            string absoluteBootstrapPath;
+            if (!GetBootstrapDllPath(x64, out absoluteBootstrapPath, out Result<int> error))
             {
-                relativeBootstrapPath = _options.BootstrapPath_x64;
-            }
-
-            var absoluteBootstrapPath = Path.GetFullPath(relativeBootstrapPath);
-            if (!File.Exists(absoluteBootstrapPath))
-            {
-                return new NotFoundError($"Could not find the dll to inject at \"{relativeBootstrapPath}\".");
+                return error;
             }
 
             var netHostInjectionResult = InjectNetHostDll
@@ -247,6 +242,58 @@ public class DotNetHostInjector
         {
             return e;
         }
+    }
+
+    private bool GetBootstrapDllPath(bool x64, out string absoluteBootstrapPath, out Result<int> inject)
+    {
+        string relativeBootstrapPath = _options.BootstrapPath_x86;
+        if (x64)
+        {
+            relativeBootstrapPath = _options.BootstrapPath_x64;
+        }
+
+        absoluteBootstrapPath = Path.GetFullPath(relativeBootstrapPath);
+        if (!File.Exists(absoluteBootstrapPath))
+        {
+            // Try to write the files
+            try
+            {
+                // bootstrap dll
+                var dllData =
+                    x64
+                        ? Properties.Resources.InjectableDotNetHost_Bootstrap_x64dll
+                        : Properties.Resources.InjectableDotNetHost_Bootstrap_x86dll;
+                File.WriteAllBytes(absoluteBootstrapPath, dllData);
+
+                // bootstrap pdb
+                string absoluteBoostrapPdbPath = Path.ChangeExtension(absoluteBootstrapPath, "pdb");
+                var pdbData =
+                    x64
+                        ? Properties.Resources.InjectableDotNetHost_Bootstrap_x64pdb
+                        : Properties.Resources.InjectableDotNetHost_Bootstrap_x86pdb;
+                File.WriteAllBytes(absoluteBoostrapPdbPath, pdbData);
+
+                // nethost
+                string absoluteNethostPath = Path.Combine(Path.GetDirectoryName(absoluteBootstrapPath)!, "nethost.dll");
+                var nethostData =
+                    x64
+                        ? Properties.Resources.nethost_x64
+                        : Properties.Resources.nethost_x86;
+                File.WriteAllBytes(absoluteNethostPath, nethostData);
+
+            }
+            catch (Exception ex)
+            {
+                inject = new Remora.Results.ExceptionError(ex, $"Failed to dump bootstrap dll or pdb to disk. Target path: {absoluteBootstrapPath}");
+                return false;
+            }
+
+            inject = new NotFoundError($"Could not find the dll to inject at \"{relativeBootstrapPath}\".");
+            return false;
+        }
+
+        inject = default;
+        return true;
     }
 
     private Result InjectNetHostDll(Reloaded.Injector.Injector injector, params string?[] pathsToSearch)

@@ -47,10 +47,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
-    <OutDir>$(ProjectDir)\..\InjectableDotNetHost.Injector\cpp_dll\$(PlatformShortName)\</OutDir>
+    <OutDir>$(SolutionDir)\dist\$(Configuration)\x64\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\dist\$(Configuration)\x64\</OutDir>
+    <IntDir>$(Configuration)\$(PlatformShortName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -7,6 +7,7 @@
 		<Nullable>enable</Nullable>
 		<VersionPrefix>2.0.1</VersionPrefix>
 		<PackageReleaseNotes>Inject with possibility to return an integer and pass in arbitrary arguments.</PackageReleaseNotes>
+		<RunPostBuildEvent>Always</RunPostBuildEvent>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,43 +21,50 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="$(SolutionDir)nethost\x64\nethost.dll" Link="cpp_dll\x64\nethost.dll">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.dll">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.exp">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.lib">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.pdb">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Include="$(SolutionDir)nethost\x86\nethost.dll" Link="cpp_dll\x86\nethost.dll">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.dll">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.exp">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.lib">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.pdb">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
+		<None Include="$(SolutionDir)nethost\x64\nethost.dll" Link="cpp_dll\x64\nethost.dll" />
+		<None Include="$(SolutionDir)nethost\x86\nethost.dll" Link="cpp_dll\x86\nethost.dll" />
+		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.dll" />
+		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.exp" />
+		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.lib" />
+		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.pdb" />
+		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.dll" />
+		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.exp" />
+		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.lib" />
+		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.pdb" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <NativeLibs Remove="DotNetHostInjectorOptions.cs" />
+		<NativeLibs Remove="DotNetHostInjectorOptions.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <NativeLibs Remove="DotNetHostInjector.cs" />
+		<NativeLibs Remove="DotNetHostInjector.cs" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="C:\Users\Shai\Desktop\SAM_NOTES_RES\InjectableDotNetHost\nethost\x64\nethost.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="powershell &quot;Get-ChildItem -Path '$(ProjectDir)\cpp_dll\x86' -Exclude '*READ_ME*' | Set-Content -Value 'dummy'&quot;&#xD;&#xA;powershell &quot;Get-ChildItem -Path '$(ProjectDir)\cpp_dll\x64' -Exclude '*READ_ME*' | Set-Content -Value 'dummy'&quot;" />
+	</Target>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="xcopy /Y /s &quot;$(SolutionDir)dist\$(Configuration)\x86\&quot; &quot;$(ProjectDir)cpp_dll\x86&quot;&#xD;&#xA;xcopy /Y /s &quot;$(SolutionDir)dist\$(Configuration)\x64\&quot; &quot;$(ProjectDir)cpp_dll\x64&quot;" />
+	</Target>
 </Project>
