@@ -5,5 +5,5 @@ If you have the source code for the target, you should call the nethost APIs dir
 https://github.com/dotnet/samples/tree/main/core/hosting  
 
 ## Thanks
-Most of the code in the repo was directly copied from Rutherther/NosSmooth.Local  
+Most of the code in the repo was directly copied from [Rutherther/NosSmooth.Local](https://github.com/Rutherther/NosSmooth.Local)  
 Some adjustments were done to also target x64 processes.
