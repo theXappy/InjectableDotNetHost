@@ -159,7 +159,7 @@ public class DotNetHostInjector
             var directoryName = Path.GetDirectoryName(dllPath);
             if (directoryName is null)
             {
-                return new GenericError("There was an error obtaining directory name of the dll path.");
+                return new NotFoundError("There was an error obtaining directory name of the dll path.");
             }
 
             var runtimePath = Path.Combine
@@ -179,7 +179,7 @@ public class DotNetHostInjector
             if (!dllPathMemory.Allocated || !classPathMemory.Allocated || !methodNameMemory.Allocated
                 || !runtimePathMemory.Allocated)
             {
-                return new GenericError("Could not allocate memory in the external process.");
+                return new ArgumentNullError("Could not allocate memory in the external process.");
             }
 
             var injected = injector.Inject(absoluteBootstrapPath);

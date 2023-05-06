@@ -37,7 +37,7 @@ namespace InjectableDotNetHost.Injector.CLI.Commands
         /// <param name="methodName">The name of the UnmanagedCallersOnly method. Default is Main.</param>
         /// <returns>A result that may or may not have succeeded.</returns>
         [Command("inject")]
-        public async Task<Result> Inject
+        public Task<Result> Inject
         (
             [Description("The id of the process to inject into.")]
             string process,
@@ -55,7 +55,7 @@ namespace InjectableDotNetHost.Injector.CLI.Commands
                     (x => x.ProcessName.Contains(process, StringComparison.OrdinalIgnoreCase));
                 if (foundProcess is null)
                 {
-                    return Result.FromError(new NotFoundError("Could not find the given process."));
+                    return Task.FromResult(Result.FromError(new NotFoundError("Could not find the given process.")));
                 }
 
                 processId = foundProcess.Id;
@@ -72,11 +72,11 @@ namespace InjectableDotNetHost.Injector.CLI.Commands
             );
             if (!result.IsSuccess)
             {
-                return Result.FromError(result);
+                return Task.FromResult(Result.FromError(result));
             }
 
             Console.WriteLine($"Got {result.Entity} from the managed injected dll.");
-            return Result.FromSuccess();
+            return Task.FromResult(Result.FromSuccess());
         }
     }
 }
