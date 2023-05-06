@@ -6,7 +6,6 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics.X86;
 using System.Security;
 using System.Text;
 using InjectableDotNetHost.Injector.Errors;
@@ -185,8 +184,7 @@ public class DotNetHostInjector
             var injected = injector.Inject(absoluteBootstrapPath);
             if (injected == 0)
             {
-                return new InjectionFailedError
-                    (absoluteBootstrapPath, "Did you forget to copy nethost.dll into the process directory?");
+                return new GenericError($"InjectionFailedError({absoluteBootstrapPath}, \"Did you forget to copy nethost.dll into the process directory?\")");
             }
 
             int functionResult;
@@ -220,23 +218,20 @@ public class DotNetHostInjector
 
             if (functionResult < 3)
             {
-                return new InjectionFailedError
-                (
-                    dllPath,
-                    $"Couldn't initialize the nethost or call the main function, did you specify the class and method correctly? Result: {functionResult}",
-                    (InjectionResult)functionResult
-                );
+                return new GenericError($"InjectionFailedError({dllPath}, " +
+                                        $"\"Couldn't initialize the nethost or call the main function, did you specify the class and method correctly? Result: {functionResult}\", " +
+                                        $"{(InjectionResult)functionResult})");
             }
 
             return functionResult - 3;
         }
         catch (UnauthorizedAccessException)
         {
-            return new InsufficientPermissionsError(process.Id, process.ProcessName);
+            return new GenericError($"InsufficientPermissionsError({process.Id}, {process.ProcessName})");
         }
         catch (SecurityException)
         {
-            return new InsufficientPermissionsError(process.Id, process.ProcessName);
+            return new GenericError($"InsufficientPermissionsError({process.Id}, {process.ProcessName})");
         }
         catch (Exception e)
         {
@@ -300,7 +295,7 @@ public class DotNetHostInjector
     {
         string? foundPath = pathsToSearch
             .Where(x => !string.IsNullOrEmpty(x))
-            .Select(x => Path.Join(x, "nethost.dll"))
+            .Select(x => Path.Combine(x, "nethost.dll"))
             .Select(Path.GetFullPath)
             .FirstOrDefault(File.Exists);
 
@@ -316,7 +311,7 @@ public class DotNetHostInjector
 
         if (handle == 0)
         {
-            return new InjectionFailedError(foundPath, "Only the devil knows why this happened.");
+            return new GenericError($"InjectionFailedError({foundPath}, \"Only the devil knows why this happened.\")");
         }
 
         return Result.FromSuccess();
@@ -326,7 +321,7 @@ public class DotNetHostInjector
     {
         var bytes = Encoding.Unicode.GetBytes(str);
         var allocated = memory.Allocate(bytes.Length + 1);
-        if (allocated == nuint.Zero)
+        if (allocated == (nuint)0)
         {
             return new ManagedMemoryAllocation(memory, allocated);
         }
@@ -340,11 +335,11 @@ public class DotNetHostInjector
     {
         if (data.Length == 0)
         {
-            return new ManagedMemoryAllocation(memory, nuint.Zero);
+            return new ManagedMemoryAllocation(memory, (nuint)0);
         }
 
         var allocated = memory.Allocate(data.Length);
-        if (allocated == nuint.Zero)
+        if (allocated == (nuint)0)
         {
             return new ManagedMemoryAllocation(memory, allocated);
         }

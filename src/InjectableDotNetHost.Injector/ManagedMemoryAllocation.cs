@@ -35,7 +35,7 @@ internal class ManagedMemoryAllocation : IDisposable
     /// <summary>
     /// Whether the memory is currently allocated.
     /// </summary>
-    public bool Allocated => Pointer != nuint.Zero;
+    public bool Allocated => Pointer != 0;
 
     /// <inheritdoc />
     public void Dispose()
@@ -43,7 +43,7 @@ internal class ManagedMemoryAllocation : IDisposable
         if (Allocated)
         {
             _memory.Free(Pointer);
-            Pointer = nuint.Zero;
+            Pointer = 0;
         }
     }
 }

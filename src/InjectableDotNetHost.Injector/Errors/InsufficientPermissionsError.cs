@@ -7,14 +7,3 @@
 using Remora.Results;
 
 namespace InjectableDotNetHost.Injector.Errors;
-
-/// <summary>
-/// The current user has insufficient permissions to inject into the given process.
-/// </summary>
-/// <param name="ProcessId">The id of the process.</param>
-/// <param name="ProcessName">The name of the process.</param>
-public record InsufficientPermissionsError(long ProcessId, string ProcessName)
-    : ResultError
-    (
-        $"Insufficient permissions to open process {ProcessId} ({ProcessName}). Try running the injector as administrator."
-    );

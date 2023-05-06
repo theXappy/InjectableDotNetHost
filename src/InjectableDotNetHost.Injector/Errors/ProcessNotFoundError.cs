@@ -7,10 +7,3 @@
 using Remora.Results;
 
 namespace InjectableDotNetHost.Injector.Errors;
-
-/// <summary>
-/// The given process was not found.
-/// </summary>
-/// <param name="ProcessId">The id of the process.</param>
-public record ProcessNotFoundError(string ProcessId)
-    : NotFoundError($"Could not find process with the given id {ProcessId}.");
