@@ -317,7 +317,8 @@ public class DotNetHostInjector
 
         if (handle == 0)
         {
-            return new GenericError($"InjectionFailedError({foundPath}, \"Only the devil knows why this happened.\")");
+            return new GenericError($"InjectionFailedError({foundPath}, \"Only the devil knows why this happened.\n" +
+                                    $"One option is you're injecting a dll without ALL APPLICATION PACKAGES to a UWP app\")");
         }
 
         return Result.FromSuccess();
