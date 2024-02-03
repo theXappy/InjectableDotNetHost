@@ -145,11 +145,12 @@ public class DotNetHostInjector
                 return error;
             }
 
+            string absoluteBootstrapDirPath = System.IO.Path.GetDirectoryName(absoluteBootstrapPath);
             var netHostInjectionResult = InjectNetHostDll
             (
                 injector,
                 Path.GetFullPath("."),
-                System.IO.Path.GetDirectoryName(absoluteBootstrapPath)
+                absoluteBootstrapDirPath
             );
 
             if (!netHostInjectionResult.IsSuccess)
@@ -171,6 +172,14 @@ public class DotNetHostInjector
                 return new NotFoundError($"Could not find the runtimeconfig.json file at \"{runtimePath}\".");
             }
 
+            var depsPath = Path.Combine
+                (directoryName, Path.GetFileNameWithoutExtension(dllPath)) + ".deps.json";
+
+            if (!File.Exists(depsPath))
+            {
+                return new NotFoundError($"Could not find the deps.json file at \"{depsPath}\".");
+            }
+
             using var dllPathMemory = AllocateString(memory, dllPath);
             using var classPathMemory = AllocateString(memory, classPath);
             using var methodNameMemory = AllocateString(memory, methodName);
@@ -183,7 +192,9 @@ public class DotNetHostInjector
                 return new ArgumentNullError("Could not allocate memory in the external process.");
             }
 
-            PermissionsHelper.MakeUwpInjectable(absoluteBootstrapPath);
+            // Make everything in the dir, including the bootstrap/deps/runtime files UWP injectable.
+            PermissionsHelper.MakeUwpInjectable(directoryName);
+            PermissionsHelper.MakeUwpInjectable(absoluteBootstrapDirPath);
 
             var injected = injector.Inject(absoluteBootstrapPath);
             if (injected == 0)

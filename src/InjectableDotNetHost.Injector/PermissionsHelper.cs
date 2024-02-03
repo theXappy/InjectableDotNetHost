@@ -24,13 +24,35 @@ namespace InjectableDotNetHost.Injector
             dInfo.SetAccessControl(dSecurity);
         }
 
-        /// <summary>
-        /// Make a certain type UWP-injectable by adding the right permissions for  "ALL APPLICATION PACKAGES".
-        /// </summary>
-        /// <param name="absoluteFilePath">File path.</param>
-        public static void MakeUwpInjectable(string absoluteFilePath)
+        public static void AddDirectorySecurity(string DirPath, string Account, FileSystemRights Rights, AccessControlType ControlType)
         {
-            AddFileSecurity(absoluteFilePath, "ALL APPLICATION PACKAGES", FileSystemRights.Read | FileSystemRights.ReadAndExecute, AccessControlType.Allow);
+            DirectoryInfo dInfo = new DirectoryInfo(DirPath);
+            DirectorySecurity dSecurity = dInfo.GetAccessControl();
+
+            InheritanceFlags iFlags = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+            PropagationFlags pFlags = PropagationFlags.None;
+            dSecurity.AddAccessRule(new FileSystemAccessRule(Account, Rights, iFlags, pFlags, ControlType));
+            dInfo.SetAccessControl(dSecurity);
+        }
+
+        /// <summary>
+        /// Make a certain filesystem node UWP-injectable by adding the right permissions for  "ALL APPLICATION PACKAGES".
+        /// For directories, it adds the permission recursively.
+        /// </summary>
+        /// <param name="absolutePath">Either a file or directory path.</param>
+        public static void MakeUwpInjectable(string absolutePath)
+        {
+            if (File.Exists(absolutePath))
+            {
+                AddFileSecurity(absolutePath, "ALL APPLICATION PACKAGES",
+                    FileSystemRights.Read | FileSystemRights.ReadAndExecute, AccessControlType.Allow);
+            }
+            else
+            {
+                AddDirectorySecurity(absolutePath, "ALL APPLICATION PACKAGES",
+                    FileSystemRights.Read | FileSystemRights.ReadAndExecute, AccessControlType.Allow);
+                
+            }
         }
     }
 }
