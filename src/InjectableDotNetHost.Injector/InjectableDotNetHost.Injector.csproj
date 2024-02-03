@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -18,6 +18,8 @@
 			<IncludeAssets>All</IncludeAssets>
 			<PrivateAssets>None</PrivateAssets>
 		</PackageReference>
+
+		<PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -32,6 +34,7 @@
 		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.lib" />
 		<None Update="cpp_dll\x86\InjectableDotNetHost.Bootstrap_x86.pdb" />
 	</ItemGroup>
+
 
 	<ItemGroup>
 		<NativeLibs Remove="DotNetHostInjectorOptions.cs" />
@@ -67,4 +70,8 @@
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="xcopy /Y /s &quot;$(SolutionDir)dist\$(Configuration)\x86\&quot; &quot;$(ProjectDir)cpp_dll\x86\&quot;&#xD;&#xA;xcopy /Y /s &quot;$(SolutionDir)dist\$(Configuration)\x64\&quot; &quot;$(ProjectDir)cpp_dll\x64\&quot;" />
 	</Target>
+
+	<ItemGroup>
+	  <NativeLibs Remove="PermissionsHelper.cs" />
+	</ItemGroup>
 </Project>

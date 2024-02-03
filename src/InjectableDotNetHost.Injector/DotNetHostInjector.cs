@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Security.AccessControl;
 using System.Text;
 using InjectableDotNetHost.Injector.Errors;
 using Microsoft.Extensions.Options;
@@ -182,6 +183,8 @@ public class DotNetHostInjector
                 return new ArgumentNullError("Could not allocate memory in the external process.");
             }
 
+            PermissionsHelper.MakeUwpInjectable(absoluteBootstrapPath);
+
             var injected = injector.Inject(absoluteBootstrapPath);
             if (injected == 0)
             {
@@ -312,6 +315,8 @@ public class DotNetHostInjector
                 "Could not find nethost.dll to inject (tried to look in executing process directory, injector directory, target process directory)"
             );
         }
+
+        PermissionsHelper.MakeUwpInjectable(foundPath);
 
         var handle = injector.Inject(foundPath);
 
