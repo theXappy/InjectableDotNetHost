@@ -145,7 +145,7 @@ public class DotNetHostInjector
                 return error;
             }
 
-            string absoluteBootstrapDirPath = System.IO.Path.GetDirectoryName(absoluteBootstrapPath);
+            string absoluteBootstrapDirPath = System.IO.Path.GetDirectoryName(absoluteBootstrapPath)!;
             var netHostInjectionResult = InjectNetHostDll
             (
                 injector,
@@ -276,7 +276,7 @@ public class DotNetHostInjector
                         : Properties.Resources.InjectableDotNetHost_Bootstrap_x86dll;
 
                 // Create the directory path if it does not exist
-                string directoryPath = Path.GetDirectoryName(absoluteBootstrapPath);
+                string directoryPath = Path.GetDirectoryName(absoluteBootstrapPath)!;
                 Directory.CreateDirectory(directoryPath);
 
                 File.WriteAllBytes(absoluteBootstrapPath, dllData);
@@ -316,7 +316,7 @@ public class DotNetHostInjector
     {
         string? foundPath = pathsToSearch
             .Where(x => !string.IsNullOrEmpty(x))
-            .Select(x => Path.Combine(x, "nethost.dll"))
+            .Select(x => Path.Combine(x!, "nethost.dll"))
             .Select(Path.GetFullPath)
             .FirstOrDefault(File.Exists);
 
