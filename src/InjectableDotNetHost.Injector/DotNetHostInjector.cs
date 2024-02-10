@@ -296,14 +296,15 @@ public class DotNetHostInjector
                         ? Properties.Resources.nethost_x64
                         : Properties.Resources.nethost_x86;
                 File.WriteAllBytes(absoluteNethostPath, nethostData);
-
             }
             catch (Exception ex)
             {
                 inject = new Remora.Results.ExceptionError(ex, $"Failed to dump bootstrap dll or pdb to disk. Target path: {absoluteBootstrapPath}");
                 return false;
             }
-
+        }
+        else
+        {
             inject = new NotFoundError($"Could not find the dll to inject at \"{relativeBootstrapPath}\".");
             return false;
         }
