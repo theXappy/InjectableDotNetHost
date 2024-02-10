@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
@@ -23,8 +23,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="$(SolutionDir)nethost\x64\nethost.dll" Link="cpp_dll\x64\nethost.dll" />
-		<None Include="$(SolutionDir)nethost\x86\nethost.dll" Link="cpp_dll\x86\nethost.dll" />
+		<None Include="$(ProjectDir)\..\..\nethost\x64\nethost.dll" Link="cpp_dll\x64\nethost.dll" />
+		<None Include="$(ProjectDir)\..\..\nethost\x86\nethost.dll" Link="cpp_dll\x86\nethost.dll" />
 		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.dll" />
 		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.exp" />
 		<None Update="cpp_dll\x64\InjectableDotNetHost.Bootstrap_x64.lib" />
