@@ -120,7 +120,7 @@ public class DotNetHostInjector
     {
         try
         {
-            bool x64 = false;
+            bool x64;
             if (IsWow64Process(process.Handle, out var isWow64))
             {
                 x64 = !isWow64;
@@ -175,9 +175,10 @@ public class DotNetHostInjector
             var depsPath = Path.Combine
                 (directoryName, Path.GetFileNameWithoutExtension(dllPath)) + ".deps.json";
 
-            if (!File.Exists(depsPath))
+            if (File.Exists(depsPath))
             {
-                return new NotFoundError($"Could not find the deps.json file at \"{depsPath}\".");
+                return new ArgumentException($"{nameof(DotNetHostInjector)} Does NOT support injecting deps.json. This will lead to a weird behaviour in the injected C++ bootstrap.\n" +
+                                             $"Luckily, if you have no external dependencies you can just delete the deps.json and your dll will still be injected. Offending file: \"{depsPath}\".");
             }
 
             using var dllPathMemory = AllocateString(memory, dllPath);
