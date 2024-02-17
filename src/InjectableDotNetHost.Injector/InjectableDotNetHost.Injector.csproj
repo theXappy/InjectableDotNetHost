@@ -5,7 +5,7 @@
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb;.dll</AllowedOutputExtensionsInPackageBuildOutputFolder>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<VersionPrefix>1.0.10</VersionPrefix>
+		<VersionPrefix>1.0.12</VersionPrefix>
 		<RunPostBuildEvent>Always</RunPostBuildEvent>
 		<LangVersion>Latest</LangVersion>
 	</PropertyGroup>
