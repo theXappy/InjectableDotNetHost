@@ -264,7 +264,8 @@ public class DotNetHostInjector
         }
 
         absoluteBootstrapPath = Path.GetFullPath(relativeBootstrapPath);
-        if (!File.Exists(absoluteBootstrapPath))
+        bool bootStrapFound = File.Exists(absoluteBootstrapPath);
+        if (!bootStrapFound)
         {
             // Try to write the files
             try
@@ -302,11 +303,6 @@ public class DotNetHostInjector
                 inject = new Remora.Results.ExceptionError(ex, $"Failed to dump bootstrap dll or pdb to disk. Target path: {absoluteBootstrapPath}");
                 return false;
             }
-        }
-        else
-        {
-            inject = new NotFoundError($"Could not find the dll to inject at Relative: \"{relativeBootstrapPath}\". Absolute: \"{absoluteBootstrapPath}\"");
-            return false;
         }
 
         inject = default;
