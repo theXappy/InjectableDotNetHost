@@ -305,7 +305,7 @@ public class DotNetHostInjector
         }
         else
         {
-            inject = new NotFoundError($"Could not find the dll to inject at \"{relativeBootstrapPath}\".");
+            inject = new NotFoundError($"Could not find the dll to inject at Relative: \"{relativeBootstrapPath}\". Absolute: \"{absoluteBootstrapPath}\"");
             return false;
         }
 
