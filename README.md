@@ -1,6 +1,6 @@
 # InjectableDotNetHost [![NuGet][nuget-image]][nuget-link]
-This probject provides a way to host the .NET Core/5/6/7+ runtime in a native (C/C++/...) target app.  
-It is done by injecting a native (C++) dll into the target, so the focus of this project is closed source targets.  
+This project provides a way to host the .NET Core/5/6/7+ runtime in a native (C/C++/...) target app.  
+It is done by injecting a native (C++) dll into the target, so the targets of this project are closed-source apps.  
 If you have the source code for the target, you should call the nethost APIs directly like here:  
 https://github.com/dotnet/samples/tree/main/core/hosting  
 
