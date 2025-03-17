@@ -1,0 +1,3 @@
+[submodule "Reloaded.Injector"]
+	path = Reloaded.Injector
+	url = https://github.com/mitchcapper/Reloaded.Injector.git
