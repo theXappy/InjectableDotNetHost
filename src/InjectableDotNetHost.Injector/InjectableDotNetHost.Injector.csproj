@@ -12,6 +12,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
+		<PackageReference Include="ReReloaded.Injector" Version="5.5.1" />
 
 		<PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
 	</ItemGroup>
@@ -67,9 +68,5 @@
 
 	<ItemGroup>
 	  <NativeLibs Remove="PermissionsHelper.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\ReInjector\Source\Reloaded.Injector\Reloaded.Injector.csproj" />
 	</ItemGroup>
 </Project>
