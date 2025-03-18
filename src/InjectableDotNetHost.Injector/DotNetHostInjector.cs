@@ -5,15 +5,13 @@
 //  Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using System.Diagnostics;
-using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Security.AccessControl;
 using System.Text;
-using InjectableDotNetHost.Injector.Errors;
 using Microsoft.Extensions.Options;
-using Reloaded.Memory.Sources;
-using Remora.Results;
+using Reloaded.Memory;
+using Reloaded.Memory.Interfaces;
+using Reloaded.Memory.Structs;
 
 namespace InjectableDotNetHost.Injector;
 
@@ -56,7 +54,7 @@ public class DotNetHostInjector
     /// <param name="methodName">The name of the method to execute. The method should return void and have no parameters.</param>
     /// <param name="data">The data to pass to the process. The array will be allocated inside the target process.</param>
     /// <returns>A result that may or may not have succeeded.</returns>
-    public Result<int> Inject
+    public int Inject
     (
         int processId,
         string dllPath,
@@ -109,7 +107,7 @@ public class DotNetHostInjector
     /// <param name="methodName">The name of the method to execute. The method should return void and have no parameters.</param>
     /// <param name="data">The data to pass to the process. The array will be allocated inside the target process.</param>
     /// <returns>A result that may or may not have succeeded.</returns>
-    public Result<int> Inject
+    public int Inject
     (
         Process process,
         string dllPath,
@@ -133,35 +131,39 @@ public class DotNetHostInjector
             dllPath = Path.GetFullPath(dllPath);
             if (!File.Exists(dllPath))
             {
-                return new NotFoundError($"Could not find the managed dll file at \"{dllPath}\".");
+                throw new Exception($"Could not find the managed dll file at \"{dllPath}\".");
             }
 
             using var injector = new Reloaded.Injector.Injector(process);
             var memory = new ExternalMemory(process);
 
             string absoluteBootstrapPath;
-            if (!GetBootstrapDllPath(x64, out absoluteBootstrapPath, out Result<int> error))
+            if (!GetBootstrapDllPath(x64, out absoluteBootstrapPath, out int error))
             {
                 return error;
             }
 
             string absoluteBootstrapDirPath = System.IO.Path.GetDirectoryName(absoluteBootstrapPath)!;
-            var netHostInjectionResult = InjectNetHostDll
-            (
-                injector,
-                Path.GetFullPath("."),
-                absoluteBootstrapDirPath
-            );
-
-            if (!netHostInjectionResult.IsSuccess)
+            try
             {
-                return Result<int>.FromError(netHostInjectionResult);
+                InjectNetHostDll
+                (
+                    injector,
+                    Path.GetFullPath("."),
+                    absoluteBootstrapDirPath
+                );
+
+            }
+            catch (Exception)
+            {
+                // ah... wrap it maybe?
+                throw;
             }
 
             var directoryName = Path.GetDirectoryName(dllPath);
             if (directoryName is null)
             {
-                return new NotFoundError("There was an error obtaining directory name of the dll path.");
+                throw new Exception("There was an error obtaining directory name of the dll path.");
             }
 
             var runtimePath = Path.Combine
@@ -169,7 +171,7 @@ public class DotNetHostInjector
 
             if (!File.Exists(runtimePath))
             {
-                return new NotFoundError($"Could not find the runtimeconfig.json file at \"{runtimePath}\".");
+                throw new Exception($"Could not find the runtimeconfig.json file at \"{runtimePath}\".");
             }
 
             var depsPath = Path.Combine
@@ -177,7 +179,7 @@ public class DotNetHostInjector
 
             if (File.Exists(depsPath))
             {
-                return new ArgumentException($"{nameof(DotNetHostInjector)} Does NOT support injecting deps.json. This will lead to a weird behaviour in the injected C++ bootstrap.\n" +
+                throw new ArgumentException($"{nameof(DotNetHostInjector)} Does NOT support injecting deps.json. This will lead to a weird behaviour in the injected C++ bootstrap.\n" +
                                              $"Luckily, if you have no external dependencies you can just delete the deps.json and your dll will still be injected. Offending file: \"{depsPath}\".");
             }
 
@@ -190,7 +192,7 @@ public class DotNetHostInjector
             if (!dllPathMemory.Allocated || !classPathMemory.Allocated || !methodNameMemory.Allocated
                 || !runtimePathMemory.Allocated)
             {
-                return new ArgumentNullError("Could not allocate memory in the external process.");
+                throw new ArgumentException("Could not allocate memory in the external process.");
             }
 
             // Make everything in the dir, including the bootstrap/deps/runtime files UWP injectable.
@@ -200,7 +202,7 @@ public class DotNetHostInjector
             var injected = injector.Inject(absoluteBootstrapPath);
             if (injected == 0)
             {
-                return new GenericError($"InjectionFailedError({absoluteBootstrapPath}, \"Did you forget to copy nethost.dll into the process directory?\")");
+                throw new Exception($"InjectionFailedError({absoluteBootstrapPath}, \"Did you forget to copy nethost.dll into the process directory?\")");
             }
 
             int functionResult;
@@ -208,11 +210,11 @@ public class DotNetHostInjector
             {
                 var loadParams64 = new LoadParams_x64
                 {
-                    LibraryPath = (long)dllPathMemory.Pointer,
-                    MethodName = (long)methodNameMemory.Pointer,
-                    RuntimeConfigPath = (long)runtimePathMemory.Pointer,
-                    TypePath = (long)classPathMemory.Pointer,
-                    UserData = (long)userDataMemory.Pointer
+                    LibraryPath = (long)dllPathMemory.Pointer.Address,
+                    MethodName = (long)methodNameMemory.Pointer.Address,
+                    RuntimeConfigPath = (long)runtimePathMemory.Pointer.Address,
+                    TypePath = (long)classPathMemory.Pointer.Address,
+                    UserData = (long)userDataMemory.Pointer.Address
                 };
                 functionResult = injector.CallFunction(absoluteBootstrapPath, "LoadAndCallMethod", loadParams64);
             }
@@ -220,11 +222,11 @@ public class DotNetHostInjector
             {
                 var loadParams32 = new LoadParams_x32
                 {
-                    LibraryPath = (int)dllPathMemory.Pointer,
-                    MethodName = (int)methodNameMemory.Pointer,
-                    RuntimeConfigPath = (int)runtimePathMemory.Pointer,
-                    TypePath = (int)classPathMemory.Pointer,
-                    UserData = (int)userDataMemory.Pointer
+                    LibraryPath = (int)dllPathMemory.Pointer.Address,
+                    MethodName = (int)methodNameMemory.Pointer.Address,
+                    RuntimeConfigPath = (int)runtimePathMemory.Pointer.Address,
+                    TypePath = (int)classPathMemory.Pointer.Address,
+                    UserData = (int)userDataMemory.Pointer.Address
                 };
                 functionResult = injector.CallFunction(absoluteBootstrapPath, "LoadAndCallMethod", loadParams32);
 
@@ -234,7 +236,7 @@ public class DotNetHostInjector
 
             if (functionResult < 3)
             {
-                return new GenericError($"InjectionFailedError({dllPath}, " +
+                throw new Exception($"InjectionFailedError({dllPath}, " +
                                         $"\"Couldn't initialize the nethost or call the main function, did you specify the class and method correctly? Result: {functionResult}\", " +
                                         $"{(InjectionResult)functionResult})");
             }
@@ -243,19 +245,19 @@ public class DotNetHostInjector
         }
         catch (UnauthorizedAccessException)
         {
-            return new GenericError($"InsufficientPermissionsError({process.Id}, {process.ProcessName})");
+            throw new Exception($"InsufficientPermissionsError({process.Id}, {process.ProcessName})");
         }
         catch (SecurityException)
         {
-            return new GenericError($"InsufficientPermissionsError({process.Id}, {process.ProcessName})");
+            throw new Exception($"InsufficientPermissionsError({process.Id}, {process.ProcessName})");
         }
         catch (Exception e)
         {
-            return e;
+            throw;
         }
     }
 
-    private bool GetBootstrapDllPath(bool x64, out string absoluteBootstrapPath, out Result<int> inject)
+    private bool GetBootstrapDllPath(bool x64, out string absoluteBootstrapPath, out int inject)
     {
         string relativeBootstrapPath = _options.BootstrapPath_x86;
         if (x64)
@@ -300,8 +302,7 @@ public class DotNetHostInjector
             }
             catch (Exception ex)
             {
-                inject = new Remora.Results.ExceptionError(ex, $"Failed to dump bootstrap dll or pdb to disk. Target path: {absoluteBootstrapPath}");
-                return false;
+                throw new Exception($"Failed to dump bootstrap dll or pdb to disk. Target path: {absoluteBootstrapPath}", ex);
             }
         }
 
@@ -309,7 +310,7 @@ public class DotNetHostInjector
         return true;
     }
 
-    private Result InjectNetHostDll(Reloaded.Injector.Injector injector, params string?[] pathsToSearch)
+    private void InjectNetHostDll(Reloaded.Injector.Injector injector, params string?[] pathsToSearch)
     {
         string? foundPath = pathsToSearch
             .Where(x => !string.IsNullOrEmpty(x))
@@ -319,7 +320,7 @@ public class DotNetHostInjector
 
         if (foundPath is null)
         {
-            return new NotFoundError
+            throw new Exception
             (
                 "Could not find nethost.dll to inject (tried to look in executing process directory, injector directory, target process directory)"
             );
@@ -331,41 +332,39 @@ public class DotNetHostInjector
 
         if (handle == 0)
         {
-            return new GenericError($"InjectionFailedError({foundPath}, \"Only the devil knows why this happened.\n" +
+            throw new Exception($"InjectionFailedError({foundPath}, \"Only the devil knows why this happened.\n" +
                                     $"One option is you're injecting a dll without ALL APPLICATION PACKAGES to a UWP app\")");
         }
-
-        return Result.FromSuccess();
     }
 
-    private ManagedMemoryAllocation AllocateString(IMemory memory, string str)
+    private ManagedMemoryAllocation AllocateString(ExternalMemory memory, string str)
     {
         var bytes = Encoding.Unicode.GetBytes(str);
-        var allocated = memory.Allocate(bytes.Length + 1);
-        if (allocated == (nuint)0)
+        var allocated = memory.Allocate((nuint)(bytes.Length + 1));
+        if (allocated.Address == (nuint)0)
         {
             return new ManagedMemoryAllocation(memory, allocated);
         }
 
-        memory.SafeWriteRaw(allocated + (nuint)bytes.Length, new byte[] { 0 });
-        memory.SafeWriteRaw(allocated, bytes);
+        memory.SafeWrite(allocated.Address + (nuint)bytes.Length, new byte[] { 0 });
+        memory.SafeWrite(allocated.Address, bytes);
         return new ManagedMemoryAllocation(memory, allocated);
     }
 
-    private ManagedMemoryAllocation Allocate(IMemory memory, byte[] data)
+    private ManagedMemoryAllocation Allocate(ExternalMemory memory, byte[] data)
     {
         if (data.Length == 0)
         {
-            return new ManagedMemoryAllocation(memory, (nuint)0);
+            return new ManagedMemoryAllocation(memory, new MemoryAllocation());
         }
 
-        var allocated = memory.Allocate(data.Length);
-        if (allocated == (nuint)0)
+        var allocated = memory.Allocate((nuint)data.Length);
+        if (allocated.Address == (nuint)0)
         {
             return new ManagedMemoryAllocation(memory, allocated);
         }
 
-        memory.SafeWriteRaw(allocated, data);
+        memory.SafeWrite(allocated.Address, data);
         return new ManagedMemoryAllocation(memory, allocated);
     }
 }
