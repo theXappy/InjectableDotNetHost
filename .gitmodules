@@ -1,0 +1,3 @@
+[submodule "src/ReInjector"]
+	path = src/ReInjector
+	url = https://github.com/theXappy/Reloaded.Injector.git
