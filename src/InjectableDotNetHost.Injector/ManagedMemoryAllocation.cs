@@ -4,7 +4,9 @@
 //  Copyright (c) František Boháček. All rights reserved.
 //  Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Reloaded.Memory.Sources;
+using Reloaded.Memory;
+using Reloaded.Memory.Structs;
+using System.Diagnostics;
 
 namespace InjectableDotNetHost.Injector;
 
@@ -13,14 +15,14 @@ namespace InjectableDotNetHost.Injector;
 /// </summary>
 internal class ManagedMemoryAllocation : IDisposable
 {
-    private readonly IMemory _memory;
+    private readonly ExternalMemory _memory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ManagedMemoryAllocation"/> class.
     /// </summary>
     /// <param name="memory">The memory with allocation.</param>
     /// <param name="pointer">The pointer to allocated memory.</param>
-    public ManagedMemoryAllocation(IMemory memory, nuint pointer)
+    public ManagedMemoryAllocation(ExternalMemory memory, MemoryAllocation pointer)
     {
         Pointer = pointer;
         _memory = memory;
@@ -30,12 +32,12 @@ internal class ManagedMemoryAllocation : IDisposable
     /// <summary>
     /// The allocated pointer number.
     /// </summary>
-    public nuint Pointer { get; private set; }
+    public MemoryAllocation Pointer { get; private set; }
 
     /// <summary>
     /// Whether the memory is currently allocated.
     /// </summary>
-    public bool Allocated => Pointer != 0;
+    public bool Allocated => Pointer.Address != 0;
 
     /// <inheritdoc />
     public void Dispose()
@@ -43,7 +45,7 @@ internal class ManagedMemoryAllocation : IDisposable
         if (Allocated)
         {
             _memory.Free(Pointer);
-            Pointer = 0;
+            Pointer = default;
         }
     }
 }
