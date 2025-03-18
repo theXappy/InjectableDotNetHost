@@ -14,11 +14,6 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
 		<PackageReference Include="Remora.Results" Version="7.2.3" />
 
-		<PackageReference Include="Reloaded.Injector" Version="1.2.5">
-			<IncludeAssets>All</IncludeAssets>
-			<PrivateAssets>None</PrivateAssets>
-		</PackageReference>
-
 		<PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
 	</ItemGroup>
 
@@ -73,5 +68,9 @@
 
 	<ItemGroup>
 	  <NativeLibs Remove="PermissionsHelper.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ReInjector\Source\Reloaded.Injector\Reloaded.Injector.csproj" />
 	</ItemGroup>
 </Project>
