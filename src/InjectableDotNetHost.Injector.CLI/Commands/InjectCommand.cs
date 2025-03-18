@@ -70,12 +70,12 @@ namespace InjectableDotNetHost.Injector.CLI.Commands
                 methodName ?? "Main",
                 new byte[] { 1, 2, 3, 4, 5 }
             );
-            if (!result.IsSuccess)
+            if (result != 0)
             {
-                return Task.FromResult(Result.FromError(result));
+                return Task.FromResult(Result.FromError<int>(result));
             }
 
-            Console.WriteLine($"Got {result.Entity} from the managed injected dll.");
+            Console.WriteLine($"Got {result} from the managed injected dll.");
             return Task.FromResult(Result.FromSuccess());
         }
     }
