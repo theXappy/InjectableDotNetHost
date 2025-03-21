@@ -8,6 +8,7 @@
 		<VersionPrefix>1.0.12</VersionPrefix>
 		<RunPostBuildEvent>Always</RunPostBuildEvent>
 		<LangVersion>Latest</LangVersion>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
